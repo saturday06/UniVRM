@@ -17,6 +17,7 @@ namespace VRM
         static void CopyAndBuild(Transform src, Transform dst, Dictionary<Transform, Transform> boneMap)
         {
             boneMap[src] = dst;
+            dst.gameObject.layer = src.gameObject.layer;
 
             foreach (Transform child in src)
             {
