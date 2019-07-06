@@ -1,0 +1,11 @@
+{
+    "name": "UniGLTF.Tests",
+    "references": [
+        "VRM",
+        "ShaderProperty.Runtime"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}
