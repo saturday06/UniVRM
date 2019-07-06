@@ -10,7 +10,7 @@ namespace VRM
 {
     public class VRMImporterContextTests
     {
-        //[Test]
+        [Test]
         public void SameMaterialButDifferentMeshImport()
         {
             var go = new GameObject("same_material");
@@ -35,30 +35,35 @@ namespace VRM
 
                 // export
                 var gltf = new glTF();
-                using (var exporter = new VRMExporter(gltf))
+                using (var exporter = new gltfExporter(gltf))
                 {
                     exporter.Prepare(go);
                     exporter.Export();
                 }
 
-                var context = new VRMImporterContext();
+                var context = new ImporterContext();
                 context.ParseGlb(gltf.ToGlbBytes());
                 context.Load();
                 context.ShowMeshes();
                 context.EnableUpdateWhenOffscreen();
 
                 var importedCubeA = context.Root.transform.GetChild(0);
-                var importedCubeAMaterial = importedCubeA.GetComponent<Renderer>().sharedMaterial;
-                Assert.AreEqual("red", importedCubeAMaterial.name);
-                Assert.AreEqual(Color.red, importedCubeAMaterial.color);
+                Assert.AreEqual("red", importedCubeA.GetComponent<Renderer>().sharedMaterial.name);
+                Assert.AreEqual(Color.red, importedCubeA.GetComponent<Renderer>().sharedMaterial.color);
 
                 var importedCubeB = context.Root.transform.GetChild(1);
-                var importedCubeBMaterial = importedCubeB.GetComponent<Renderer>().sharedMaterial;
-                Assert.AreEqual("red", importedCubeBMaterial.name);
-                Assert.AreEqual(Color.red, importedCubeBMaterial.color);
 
-                importedCubeAMaterial.name = "modified";
-                Assert.AreEqual("modified", importedCubeBMaterial.name);
+                Assert.AreEqual(Color.red, importedCubeB.GetComponent<Renderer>().sharedMaterial.color);
+                Assert.AreEqual("red", importedCubeB.GetComponent<Renderer>().sharedMaterial.name);
+
+                importedCubeA.GetComponent<Renderer>().sharedMaterial.name = "green";
+                importedCubeA.GetComponent<Renderer>().sharedMaterial.color = Color.green;
+
+                Assert.AreEqual(Color.green, importedCubeB.GetComponent<Renderer>().sharedMaterial.color);
+                Assert.AreEqual("green", importedCubeB.GetComponent<Renderer>().sharedMaterial.name);
+
+                Assert.AreEqual(Color.green, importedCubeB.GetComponent<Renderer>().material.color);
+                Assert.AreEqual("green (Instance)", importedCubeB.GetComponent<Renderer>().material.name);
             }
             finally
             {

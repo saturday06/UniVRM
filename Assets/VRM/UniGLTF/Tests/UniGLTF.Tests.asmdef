@@ -4,7 +4,9 @@
         "VRM",
         "ShaderProperty.Runtime"
     ],
-    "optionalUnityReferences": [],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false

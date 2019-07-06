@@ -691,6 +691,64 @@ namespace UniGLTF
             }
         }
 
+        [Test]
+        public void SameMaterialButDifferentMeshImport()
+        {
+            var go = new GameObject("same_material");
+            try
+            {
+                var shader = Shader.Find("Unlit/Color");
+                var material = new Material(shader);
+                material.name = "red";
+                material.color = Color.red;
+
+                var cubeA = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                {
+                    cubeA.transform.SetParent(go.transform);
+                    cubeA.GetComponent<Renderer>().sharedMaterial = material;
+                }
+
+                var cubeB = GameObject.Instantiate(cubeA);
+                {
+                    cubeB.transform.SetParent(go.transform);
+                    cubeB.GetComponent<Renderer>().sharedMaterial = material;
+                }
+
+                // export
+                var gltf = new glTF();
+                using (var exporter = new gltfExporter(gltf))
+                {
+                    exporter.Prepare(go);
+                    exporter.Export();
+                }
+
+                var context = new ImporterContext();
+                context.ParseGlb(gltf.ToGlbBytes());
+                context.Load();
+                context.ShowMeshes();
+                context.EnableUpdateWhenOffscreen();
+
+                var importedCubeA = context.Root.transform.GetChild(0);
+                var importedCubeAMaterial = importedCubeA.GetComponent<Renderer>().sharedMaterial;
+                Assert.AreEqual("red", importedCubeAMaterial.name);
+                Assert.AreEqual(Color.red, importedCubeAMaterial.color);
+
+                var importedCubeB = context.Root.transform.GetChild(1);
+                var importedCubeBMaterial = importedCubeB.GetComponent<Renderer>().sharedMaterial;
+                Assert.AreEqual("red", importedCubeBMaterial.name);
+                Assert.AreEqual(Color.red, importedCubeBMaterial.color);
+
+                importedCubeAMaterial.name = "green";
+                importedCubeAMaterial.color = Color.green;
+                Assert.AreEqual("green", importedCubeBMaterial.sharedMaterial.name);
+                Assert.AreEqual(Color.green, importedCubeBMaterial.sharedMaterial.color);
+            }
+            finally
+            {
+                GameObject.DestroyImmediate(go);
+            }
+        }
+
         [Serializable]
         class CantConstruct
         {
