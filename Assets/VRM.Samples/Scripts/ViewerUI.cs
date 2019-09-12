@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UniHumanoid;
@@ -235,6 +236,62 @@ namespace VRM.Samples
             }
 
             m_ui.UpdateToggle(EnableBvh, EnableTPose);
+        }
+
+        private void OnDrawGizmos()
+        {
+            var go = GameObject.Find("VRM");
+            if (go == null)
+            {
+                return;
+            }
+
+            var preColor = Gizmos.color;
+            var preMatrix = Gizmos.matrix;
+            Gizmos.matrix = go.transform.localToWorldMatrix;
+
+            var num = 0;
+            // 法線方向にラインを描画
+            foreach (var smr in go.GetComponentsInChildren<SkinnedMeshRenderer>())
+            {
+                var mesh = smr.sharedMesh;
+                for (var i = 0; i < mesh.normals.Length; i++)
+                {
+                    num++;
+                    var from = mesh.vertices[i];
+                    var to = from + mesh.normals[i];
+                    if (to.magnitude > 0)
+                    {
+                        continue;
+                    }
+
+                    Gizmos.color = Color.red;
+                    //Gizmos.DrawLine(from, to);
+                    Gizmos.DrawSphere(from, 0.05f);
+
+                    if (UniGLTF.MeshImporter.unityGeneratedNormals.Contains(i))
+                    {
+                        Gizmos.color = Color.blue;
+                        //Gizmos.DrawLine(from, to);
+                        Gizmos.DrawSphere(from, 0.05f);
+                    }
+                    else if (UniGLTF.MeshImporter.userGeneratedNormals.Contains(i))
+                    {
+                        Gizmos.color = Color.red;
+                        //Gizmos.DrawLine(from, to);
+                        Gizmos.DrawSphere(from, 0.05f);
+                    }
+                    else
+                    {
+                        Gizmos.color = Color.cyan;
+                        //Gizmos.DrawLine(from, to);
+                    }
+                }
+            }
+            Debug.LogFormat("num={0}", num);
+
+            Gizmos.color = preColor;
+            Gizmos.matrix = preMatrix;
         }
 
         void EnableBvh()

@@ -433,6 +433,34 @@ namespace UniGLTF
 #endif
             }
 
+            if (mesh.name == "Body")
+            {
+                Debug.LogFormat("Body normals.Length = {0}, recalculateNormals = {1}", mesh.normals.Length, recalculateNormals);
+                var normals = mesh.normals.ToList().ToArray(); // deep cloneしたい
+                mesh.RecalculateNormals();
+                var recalculatedNormals = mesh.normals.ToList().ToArray(); // deep cloneしたい
+
+                for (var i = 0; i < mesh.normals.Length; i++)
+                {
+                     // original normalsがある場合はそれを使う
+                    if (normals[i].magnitude > 0)
+                    {
+                        continue;
+                    }
+                    // recalculatedNormalsがある場合はそれを使う
+                    if (recalculatedNormals[i].magnitude > 0)
+                    {
+                        normals[i] = recalculatedNormals[i];
+                        unityGeneratedNormals.Add(i);
+                        continue;
+                    }
+                    // どっちもない場合は上方向にする
+                    normals[i] = new Vector3(0, 1, 0);
+                    userGeneratedNormals.Add(i);
+                }
+                mesh.normals = normals;
+            }
+
             var result = new MeshWithMaterials
             {
                 Mesh = mesh,
@@ -478,6 +506,9 @@ namespace UniGLTF
 
             return result;
         }
+
+        public static HashSet<int> unityGeneratedNormals = new HashSet<int>();
+        public static HashSet<int> userGeneratedNormals = new HashSet<int>();
 
         /// <summary>
         /// Meshの法線を元にタンジェントを計算する。
