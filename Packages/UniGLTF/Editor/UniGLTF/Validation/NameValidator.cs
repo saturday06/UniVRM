@@ -34,14 +34,14 @@ namespace UniGLTF
             foreach (var material in materials)
             {
                 var shader = material.shader;
-                int propertyCount = ShaderUtil.GetPropertyCount(shader);
+                int propertyCount = shader.GetPropertyCount();
                 for (int i = 0; i < propertyCount; i++)
                 {
-                    if (ShaderUtil.GetPropertyType(shader, i) == ShaderUtil.ShaderPropertyType.TexEnv)
+                    if (shader.GetPropertyType(i) == UnityEngine.Rendering.ShaderPropertyType.Texture)
                     {
-                        if ((material.GetTexture(ShaderUtil.GetPropertyName(shader, i)) != null))
+                        if (material.GetTexture(shader.GetPropertyName(i)) != null)
                         {
-                            var textureName = material.GetTexture(ShaderUtil.GetPropertyName(shader, i)).name;
+                            var textureName = material.GetTexture(shader.GetPropertyName(i)).name;
                             if (!textureNameList.Contains(textureName))
                                 textureNameList.Add(textureName);
                         }

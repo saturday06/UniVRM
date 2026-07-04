@@ -33,15 +33,15 @@ namespace VRM
         public ShaderProperty[] Properties;
 
 #if UNITY_EDITOR
-        static ShaderPropertyType ConvType(ShaderUtil.ShaderPropertyType src)
+        static ShaderPropertyType ConvType(UnityEngine.Rendering.ShaderPropertyType src)
         {
             switch (src)
             {
-                case ShaderUtil.ShaderPropertyType.TexEnv: return ShaderPropertyType.TexEnv;
-                case ShaderUtil.ShaderPropertyType.Color: return ShaderPropertyType.Color;
-                case ShaderUtil.ShaderPropertyType.Float: return ShaderPropertyType.Float;
-                case ShaderUtil.ShaderPropertyType.Range: return ShaderPropertyType.Range;
-                case ShaderUtil.ShaderPropertyType.Vector: return ShaderPropertyType.Vector;
+                case UnityEngine.Rendering.ShaderPropertyType.Texture: return ShaderPropertyType.TexEnv;
+                case UnityEngine.Rendering.ShaderPropertyType.Color: return ShaderPropertyType.Color;
+                case UnityEngine.Rendering.ShaderPropertyType.Float: return ShaderPropertyType.Float;
+                case UnityEngine.Rendering.ShaderPropertyType.Range: return ShaderPropertyType.Range;
+                case UnityEngine.Rendering.ShaderPropertyType.Vector: return ShaderPropertyType.Vector;
                 default: throw new NotImplementedException();
             }
         }
@@ -49,10 +49,10 @@ namespace VRM
         public static ShaderProps FromShader(Shader shader)
         {
             var properties = new List<ShaderProperty>();
-            for (int i = 0; i < ShaderUtil.GetPropertyCount(shader); ++i)
+            for (int i = 0; i < shader.GetPropertyCount(); ++i)
             {
-                var name = ShaderUtil.GetPropertyName(shader, i);
-                var propType = ShaderUtil.GetPropertyType(shader, i);
+                var name = shader.GetPropertyName(i);
+                var propType = shader.GetPropertyType(i);
                 properties.Add(new ShaderProperty(name, ConvType(propType)));
             }
 
