@@ -24,7 +24,7 @@ namespace VRM
             if (m.shader.name == "VRM/MToon")
             {
                 // [Unity列挙]
-                // * UnityEditor.ShaderUtil により Shader の Property を列挙する。Editor専用。
+                // * Shader の Property を列挙する。Editor専用。
                 // * あらかじめEditorで実行して property 一覧をハードコーディングしてある `Assets\VRMShaders\VRM\IO\Runtime\VRM\PreExportShaders_VRM.cs` 界隈。
                 // * 今は "VRM/MToon" のみ
                 // 

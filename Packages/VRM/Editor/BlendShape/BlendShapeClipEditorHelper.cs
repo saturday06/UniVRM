@@ -93,7 +93,7 @@ namespace VRM
                             {
                                 switch (propItem.PropertyType)
                                 {
-                                    case ShaderUtil.ShaderPropertyType.Color:
+                                    case UnityEngine.Rendering.ShaderPropertyType.Color:
                                         {
                                             property.FindPropertyRelative("BaseValue").vector4Value = propItem.DefaultValues;
 
@@ -107,7 +107,7 @@ namespace VRM
                                         }
                                         break;
 
-                                    case ShaderUtil.ShaderPropertyType.TexEnv:
+                                    case UnityEngine.Rendering.ShaderPropertyType.Texture:
                                         {
                                             property.FindPropertyRelative("BaseValue").vector4Value = propItem.DefaultValues;
 

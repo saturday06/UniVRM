@@ -14,7 +14,7 @@ namespace VRM
     [Serializable]
     public struct PropItem
     {
-        public ShaderUtil.ShaderPropertyType PropertyType;
+        public UnityEngine.Rendering.ShaderPropertyType PropertyType;
         public Vector4 DefaultValues;
     }
 #endif
@@ -42,14 +42,14 @@ namespace VRM
 #if UNITY_EDITOR
 
             var propNames = new List<string>();
-            for (int i = 0; i < ShaderUtil.GetPropertyCount(material.shader); ++i)
+            for (int i = 0; i < material.shader.GetPropertyCount(); ++i)
             {
-                var propType = ShaderUtil.GetPropertyType(material.shader, i);
-                var name = ShaderUtil.GetPropertyName(material.shader, i);
+                var propType = material.shader.GetPropertyType(i);
+                var name = material.shader.GetPropertyName(i);
 
                 switch (propType)
                 {
-                    case ShaderUtil.ShaderPropertyType.Color:
+                    case UnityEngine.Rendering.ShaderPropertyType.Color:
                         // 色
                         item.PropMap.Add(name, new PropItem
                         {
@@ -59,7 +59,7 @@ namespace VRM
                         propNames.Add(name);
                         break;
 
-                    case ShaderUtil.ShaderPropertyType.TexEnv:
+                    case UnityEngine.Rendering.ShaderPropertyType.Texture:
                         // テクスチャ
                         {
                             name += "_ST";
